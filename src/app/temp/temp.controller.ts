@@ -9,7 +9,7 @@ export class TempController {
   getEnvVariables() {
     return {
       baseUrl: this.configService.getBaseUrl(),
-      frontendUrl: this.configService.getFrontendUrl(),
+      frontendUrl: this.configService.getDBName(),
     };
   }
 }
