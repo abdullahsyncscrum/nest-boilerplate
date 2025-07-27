@@ -7,4 +7,7 @@ export interface IEnvSchema {
   DB_NAME: string;
   DB_HOST: string;
   DB_PORT: number;
+  TWILIO_ACCOUNT_SID: string;
+  TWILIO_API_KEY: string;
+  TWILIO_API_SECRET: string;
 }

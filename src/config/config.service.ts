@@ -26,6 +26,9 @@ export class ConfigService {
       DB_NAME: Joi.string().trim().min(1).required(),
       DB_HOST: Joi.string().trim().min(1).required(),
       DB_PORT: Joi.number().port().required(),
+      TWILIO_ACCOUNT_SID: Joi.string().trim().min(1).required(),
+      TWILIO_API_KEY: Joi.string().trim().min(1).required(),
+      TWILIO_API_SECRET: Joi.string().trim().min(1).required(),
     });
     return schema;
   }
@@ -79,5 +82,17 @@ export class ConfigService {
 
   getDBPort() {
     return this.get('DB_PORT');
+  }
+
+  getTwilioAccoundSid() {
+    return this.get('TWILIO_ACCOUNT_SID');
+  }
+
+  getTwilioApiKey() {
+    return this.get('TWILIO_API_KEY');
+  }
+
+  getTwilioSecretKey() {
+    return this.get('TWILIO_API_SECRET');
   }
 }
