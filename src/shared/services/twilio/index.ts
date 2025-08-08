@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { TwilioService } from 'nestjs-twilio';
 import { ConfigService } from 'src/config';
-import AccessToken from 'twilio/lib/jwt/AccessToken';
-
-const { VideoGrant } = AccessToken;
+import { VideoGrant } from 'twilio/lib/jwt/AccessToken';
+import { jwt } from 'twilio';
+const { AccessToken } = jwt;
 
 @Injectable()
 export class TwilioVideoService {
@@ -12,15 +12,26 @@ export class TwilioVideoService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createRoom(uniqueName: string) {
+  async getOrCreateRoom(
+    uniqueName: string,
+    maxParticipants?: number,
+    maxDurationSec?: number,
+  ) {
+    try {
+      const existingRoom = await this.twilio.client.video.v1
+        .rooms(uniqueName)
+        .fetch();
+      if (existingRoom && existingRoom.status !== 'completed') {
+        return existingRoom;
+      }
+    } catch (error) {}
+
     return await this.twilio.client.video.v1.rooms.create({
       uniqueName,
       type: 'group',
-      maxParticipants: 20,
-      //   statusCallback: `${process.env.API_URL}/webhooks/twilio/room`, // It is the url of webhook: when any event is happend this url is call like recordingg start, participant join, etc
-      //   statusCallbackMethod: 'POST',
+      maxParticipants: maxParticipants ?? undefined,
       emptyRoomTimeout: 10,
-      maxParticipantDuration: 60 * 60,
+      maxParticipantDuration: maxDurationSec ?? undefined,
       recordParticipantsOnConnect: true,
     });
   }

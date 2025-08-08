@@ -1,18 +1,16 @@
-import { ENTITIES } from './entities';
-import databaseConfig from './database.config';
 import {
-  TypeOrmModule,
-  TypeOrmModuleAsyncOptions,
-  TypeOrmModuleOptions,
-} from '@nestjs/typeorm';
+  MongooseModule,
+  MongooseModuleAsyncOptions,
+  MongooseModuleOptions,
+} from '@nestjs/mongoose';
+import databaseConfig from './database.config';
 
-export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
-  useFactory: async (): Promise<TypeOrmModuleOptions> => {
+export const mongooseAsyncConfig: MongooseModuleAsyncOptions = {
+  useFactory: async (): Promise<MongooseModuleOptions> => {
     return databaseConfig;
   },
 };
 
 export const DatabaseProvider = [
-  TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
-  TypeOrmModule.forFeature(ENTITIES),
+  MongooseModule.forRootAsync(mongooseAsyncConfig),
 ];

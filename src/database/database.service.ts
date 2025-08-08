@@ -1,26 +1,28 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { DataSource, QueryRunner } from 'typeorm';
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { Connection, ClientSession } from 'mongoose';
+import { InjectConnection } from '@nestjs/mongoose';
 
-type TransactionCallback = (queryRunner: QueryRunner) => any | never;
+type TransactionCallback<T> = (session: ClientSession) => Promise<T>;
 
 @Injectable()
 export class DatabaseService {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(@InjectConnection() private readonly connection: Connection) {}
 
-  async runWithTransaction<T>(callback: TransactionCallback) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
+  async runWithTransaction<T>(callback: TransactionCallback<T>): Promise<T> {
+    const session = await this.connection.startSession();
 
     try {
-      await queryRunner.startTransaction();
-      const response = await callback(queryRunner);
-      await queryRunner.commitTransaction();
-      return response as T;
+      let result: T;
+
+      await session.withTransaction(async () => {
+        result = await callback(session);
+      });
+
+      return result!;
     } catch (e) {
-      await queryRunner.rollbackTransaction();
       throw new BadRequestException(e.message || e || 'Transaction failed');
     } finally {
-      await queryRunner.release();
+      session.endSession();
     }
   }
 }

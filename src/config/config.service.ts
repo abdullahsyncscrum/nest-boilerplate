@@ -16,19 +16,20 @@ export class ConfigService {
 
   private getEnvSchema() {
     const schema = Joi.object<IEnvSchema>({
-      BASE_URL: Joi.string().uri().required(),
-      NODE_ENV: Joi.string()
-        .valid(...Object.values(DeploymentEnvironmentTypes))
-        .default(DeploymentEnvironmentTypes.Development),
-      PORT: Joi.number().port().required(),
-      DB_USERNAME: Joi.string().trim().min(1).required(),
-      DB_PASSWORD: Joi.string().trim().min(1).required(),
-      DB_NAME: Joi.string().trim().min(1).required(),
-      DB_HOST: Joi.string().trim().min(1).required(),
-      DB_PORT: Joi.number().port().required(),
+      MONGO_URI: Joi.string().uri().required(),
+      // NODE_ENV: Joi.string()
+      //   .valid(...Object.values(DeploymentEnvironmentTypes))
+      //   .default(DeploymentEnvironmentTypes.Development),
+      // PORT: Joi.number().port().required(),
+      // DB_USERNAME: Joi.string().trim().min(1).required(),
+      // DB_PASSWORD: Joi.string().trim().min(1).required(),
+      // DB_NAME: Joi.string().trim().min(1).required(),
+      // DB_HOST: Joi.string().trim().min(1).required(),
+      // DB_PORT: Joi.number().port().required(),
       TWILIO_ACCOUNT_SID: Joi.string().trim().min(1).required(),
       TWILIO_API_KEY: Joi.string().trim().min(1).required(),
       TWILIO_API_SECRET: Joi.string().trim().min(1).required(),
+      TWILIO_AUTH_TOKEN: Joi.string().trim().min(1).required(),
     });
     return schema;
   }
@@ -94,5 +95,13 @@ export class ConfigService {
 
   getTwilioSecretKey() {
     return this.get('TWILIO_API_SECRET');
+  }
+
+  getTwilioAuthToken() {
+    return this.get('TWILIO_AUTH_TOKEN');
+  }
+
+  getMongoURI() {
+    return this.get('MONGO_URI');
   }
 }

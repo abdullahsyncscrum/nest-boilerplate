@@ -19,7 +19,7 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: '100mb' }));
 
   // Enable cors
-  app.enableCors();
+  app.enableCors({ origin: 'http://localhost:5173', credentials: true });
 
   // Apply global pipe for incoming data validation
   app.useGlobalPipes(
@@ -32,6 +32,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000);
+  await app.listen(8000);
 }
 bootstrap();
